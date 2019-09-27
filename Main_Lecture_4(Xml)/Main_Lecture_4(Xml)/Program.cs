@@ -14,6 +14,12 @@ namespace Main_Lecture_4_Xml_
 
         static void Main(string[] args)
         {
+            //Marks
+            Marks mark_A = new Marks("A", "01.10.2019");
+            Marks mark_B = new Marks("B", "15.10.2019");
+            Marks mark_C = new Marks("C", "01.11.2019");
+            Marks mark_D = new Marks("D", "15.11.2019");
+            Marks mark_F = new Marks("F", "01.12.2019");
 
             //Course
             Course course_1 = new Course("Sigma: c# basic course", "01.03.2020", "15.05.2020", 65);
@@ -23,67 +29,55 @@ namespace Main_Lecture_4_Xml_
 
             //Teacher
             Teacher teacher_1 = new Teacher("Oleksii", "Kachmar", "31.07.1983");
+            Teacher teacher_2 = new Teacher("Oleh", "Zarevuch", "15.05.1992");
+
+            //HomeTasks
+            HomeTaks homeTask_1 = new HomeTaks("Watch 1-st season of Games of Thrones", "Discuss Daenerys character with friends", "15.10.2019");
+            HomeTaks homeTask_2 = new HomeTaks("Watch 2-st season of Games of Thrones", "Discuss Tyrion Lannister character with friends", "30.10.2019");
+            HomeTaks homeTask_3 = new HomeTaks("Watch 3-st season of Games of Thrones", "Discuss Jaime Lannister character with friends", "15.10.2019");
+            HomeTaks homeTask_4 = new HomeTaks("Watch 4-st season of Games of Thrones", "Discuss Arya Stark character with friends", "30.10.2019");
+
+            // Teacher has next courses
             teacher_1.Courses.Add(course_1);
             teacher_1.Courses.Add(course_2);
+            teacher_1.Courses.Add(course_3);
 
-            Teacher teacher_2 = new Teacher("Oleh", "Zarevuch", "15.05.1992");
+            teacher_2.Courses.Add(course_1);
             teacher_2.Courses.Add(course_3);
             teacher_2.Courses.Add(course_4);
 
-            Console.WriteLine($"\nFirst Teacher: {teacher_1.TeacherFirstName} {teacher_1.TeacherLastName} has next courses: ");
-            foreach (var c in teacher_1.Courses)
-            {
-                Console.WriteLine(c.ToString());
-            }
-            Console.WriteLine($"\nSecond Teacher: {teacher_2.TeacherFirstName} {teacher_2.TeacherLastName} has next courses: ");
-            foreach (var c in teacher_2.Courses)
-            {
-                Console.WriteLine(c.ToString());
-            };
+            TeacherHasNextCourses(teacher_1);
+            TeacherHasNextCourses(teacher_2);
+
+            // Course has next Teachers:
+            course_1.CourseTeachers.Add(teacher_1);
+            course_1.CourseTeachers.Add(teacher_2);
+            course_2.CourseTeachers.Add(teacher_1);
+            course_3.CourseTeachers.Add(teacher_1);
+            course_3.CourseTeachers.Add(teacher_2);
+            course_4.CourseTeachers.Add(teacher_2);
+
+            CourseHasNextTeachers(course_1);
+            CourseHasNextTeachers(course_2);
+            CourseHasNextTeachers(course_3);
+            CourseHasNextTeachers(course_4);
+
+            //Course has next home tasks:      
+            course_2.CourseHomeTasksList.Add(homeTask_1);
+            course_2.CourseHomeTasksList.Add(homeTask_2);
+            course_3.CourseHomeTasksList.Add(homeTask_3);
+            course_3.CourseHomeTasksList.Add(homeTask_4);
+
+            CourseHasNextHomeTasks(course_1);
+            CourseHasNextHomeTasks(course_2);
+            CourseHasNextHomeTasks(course_3);
+            CourseHasNextHomeTasks(course_4);
 
             //STUDENT
-            List <Student> ImportStudents = new List<Student>();
-
-            // Import
-            Import(ImportStudents);
-            Console.WriteLine("\nV.1");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"List after Import Students. Count - {ImportStudents.Count}");
-            Console.ResetColor();
-            foreach (var st in ImportStudents)
-            {
-                Console.WriteLine(st.ToString());
-            }
-
-            // V.2  I just want to try this method but I do not know how to add ExtraDataElement and Course
-            XDocument document2 = XDocument.Load("Input_students.xml");
-            var studentsElement2 = from xe in document2.Element("Students").Elements("Student")   //child
-                                   select new Student
-                                   {
-                                       FirstName = xe.Attribute("firstName").Value,
-                                       LastName = xe.Attribute("lastName").Value,
-                                       Birthday = DateTime.ParseExact(xe.Element("BirthDate").Value, "dd.MM.yyyy", CultureInfo.InvariantCulture),
-                                       Email = xe.Element("Email").Value,
-                                       Phone = xe.Element("PhoneNumber").Value,
-                                       GitHubLink = xe.Element("GitHubLink").Value
-
-                                   };
-            Console.WriteLine("\nV.2");
-
-            foreach (var item in studentsElement2)
-            {
-                Console.WriteLine($"{item.FirstName} - {item.LastName} - {item.GitHubLink}");
-            }
-
-            //Export
-            var result = Export(ImportStudents);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nFile after Export Students. Count - {ImportStudents.Count}");
-            Console.ResetColor();
-            Console.WriteLine($"\n{result}");
+            List<Student> ImportStudents = new List<Student>();
 
             //Add new student
-            Student newStudent = new Student()
+            Student newStudent_1 = new Student()
             {
                 FirstName = "Ketrin",
                 LastName = "Shynkarenko",
@@ -92,76 +86,169 @@ namespace Main_Lecture_4_Xml_
                 Phone = "0936233319",
                 GitHubLink = "katya-shynkarenko"
             };
-            ImportStudents.Add(newStudent);
-            newStudent.ExtraData.Add("SkypeId", "kdubovets");
-            newStudent.ExtraData.Add("Marriage", "No,Thanks God");
-            newStudent.Courses.Add(course_3);
-            newStudent.Courses.Add(course_2);
+            ImportStudents.Add(newStudent_1);
+            newStudent_1.ExtraData.Add("SkypeId", "kdubovets");
+            newStudent_1.ExtraData.Add("Marriage", "No,Thanks God");
 
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"\nStudent {newStudent.FirstName} {newStudent.LastName} has next courses:");
-            foreach (var course in newStudent.Courses)
-            {
-                Console.WriteLine(course);
-            }
-            Console.ResetColor();
+            // corurses added to student
+            newStudent_1.Courses.Add(course_2);
+            newStudent_1.Courses.Add(course_3);
 
-            course_3.CourseStudents.Add(newStudent);
-            course_4.CourseStudents.Add(newStudent);
+            // student added to courses
+            course_3.CourseStudents.Add(newStudent_1);
+            course_4.CourseStudents.Add(newStudent_1);
 
-            Console.WriteLine($"\nStudents on Course: {course_3}");
-            foreach (var c in course_3.CourseStudents)
-            {
-                Console.WriteLine(c.ToString());
-            };
+            // all hometasks and its mark added to student
+            newStudent_1.AllHomeTasksMarks.Add(homeTask_1, mark_B);
+            newStudent_1.AllHomeTasksMarks.Add(homeTask_2, mark_A);
+            newStudent_1.AllHomeTasksMarks.Add(homeTask_3, mark_B);
+            newStudent_1.AllHomeTasksMarks.Add(homeTask_4, mark_A);
 
-            Console.WriteLine($"\nStudents on Course: {course_4}");
-            foreach (var c in course_4.CourseStudents)
-            {
-                Console.WriteLine(c.ToString());
-            };
+            // student added to home tasks
+            homeTask_1.HomeTaksMarks.Add(newStudent_1, mark_B);
+            homeTask_2.HomeTaksMarks.Add(newStudent_1, mark_A);
+            homeTask_3.HomeTaksMarks.Add(newStudent_1, mark_B);
+            homeTask_4.HomeTaksMarks.Add(newStudent_1, mark_A);
+
+            //Students on each Course
+            CourseHasNextStudents(course_1);
+            CourseHasNextStudents(course_2);
+            CourseHasNextStudents(course_3);
+            CourseHasNextStudents(course_4);
+
+            //Student has next courses
+            StudentHasNextCourses(newStudent_1);
+
+            //Student has next Home Tasks
+            StudentHasNextHomeTasks(newStudent_1);
+
+            //Home task has next Students and their marks 
+            HomeTaskHasNextStudents(homeTask_1);
+            HomeTaskHasNextStudents(homeTask_2);
+            HomeTaskHasNextStudents(homeTask_3);
+            HomeTaskHasNextStudents(homeTask_4);
+            
+
+            //*********************************************
+
+            //// Import
+            //Import(ImportStudents);
+            //Console.WriteLine("\nV.1");
+            //Console.ForegroundColor = ConsoleColor.Green;
+            //Console.WriteLine($"List after Import Students. Count - {ImportStudents.Count}");
+            //Console.ResetColor();
+            //foreach (var st in ImportStudents)
+            //{
+            //    Console.WriteLine(st.ToString());
+            //}
+
+            //// V.2  I just want to try this method but I do not know how to add ExtraDataElement and Course
+            //XDocument document2 = XDocument.Load("Input_students.xml");
+            //var studentsElement2 = from xe in document2.Element("Students").Elements("Student")   //child
+            //                       select new Student
+            //                       {
+            //                           FirstName = xe.Attribute("firstName").Value,
+            //                           LastName = xe.Attribute("lastName").Value,
+            //                           Birthday = DateTime.ParseExact(xe.Element("BirthDate").Value, "dd.MM.yyyy", CultureInfo.InvariantCulture),
+            //                           Email = xe.Element("Email").Value,
+            //                           Phone = xe.Element("PhoneNumber").Value,
+            //                           GitHubLink = xe.Element("GitHubLink").Value
+
+            //                       };
+            //Console.WriteLine("\nV.2");
+
+            //foreach (var item in studentsElement2)
+            //{
+            //    Console.WriteLine($"{item.FirstName} - {item.LastName} - {item.GitHubLink}");
+            //}
+
+            ////Export
+            //var result = Export(ImportStudents);
+            //Console.ForegroundColor = ConsoleColor.Red;
+            //Console.WriteLine($"\nFile after Export Students. Count - {ImportStudents.Count}");
+            //Console.ResetColor();
+            //Console.WriteLine($"\n{result}");
+
+            ////Add new student
+            //Student newStudent = new Student()
+            //{
+            //    FirstName = "Ketrin",
+            //    LastName = "Shynkarenko",
+            //    Birthday = new DateTime(1987, 12, 05),
+            //    Email = "katja.shynkarenko@gmail.com",
+            //    Phone = "0936233319",
+            //    GitHubLink = "katya-shynkarenko"
+            //};
+            //ImportStudents.Add(newStudent);
+            //newStudent.ExtraData.Add("SkypeId", "kdubovets");
+            //newStudent.ExtraData.Add("Marriage", "No,Thanks God");
+            //newStudent.Courses.Add(course_3);
+            //newStudent.Courses.Add(course_2);
+
+            //Console.ForegroundColor = ConsoleColor.Magenta;
+            //Console.WriteLine($"\nStudent {newStudent.FirstName} {newStudent.LastName} has next courses:");
+            //foreach (var course in newStudent.Courses)
+            //{
+            //    Console.WriteLine(course);
+            //}
+            //Console.ResetColor();
+
+            //course_3.CourseStudents.Add(newStudent);
+            //course_4.CourseStudents.Add(newStudent);
+
+            //Console.WriteLine($"\nStudents on Course: {course_3}");
+            //foreach (var c in course_3.CourseStudents)
+            //{
+            //    Console.WriteLine(c.ToString());
+            //};
+
+            //Console.WriteLine($"\nStudents on Course: {course_4}");
+            //foreach (var c in course_4.CourseStudents)
+            //{
+            //    Console.WriteLine(c.ToString());
+            //};
 
 
-            //List after added new Student. Count
+            ////List after added new Student. Count
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\nList after added new Student. Count - {ImportStudents.Count}");
-            Console.ResetColor();
-            foreach (var st in ImportStudents)
-            {
-                Console.WriteLine(st.ToString());
-            }
+            //Console.ForegroundColor = ConsoleColor.Green;
+            //Console.WriteLine($"\nList after added new Student. Count - {ImportStudents.Count}");
+            //Console.ResetColor();
+            //foreach (var st in ImportStudents)
+            //{
+            //    Console.WriteLine(st.ToString());
+            //}
 
-            //File after added new Student. Count
+            ////File after added new Student. Count
 
-            var result2 = Export(ImportStudents);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\nFile after added new Student. Count - {ImportStudents.Count}");
-            Console.ResetColor();
-            Console.WriteLine($"{result2}");
+            //var result2 = Export(ImportStudents);
+            //Console.ForegroundColor = ConsoleColor.Red;
+            //Console.WriteLine($"\nFile after added new Student. Count - {ImportStudents.Count}");
+            //Console.ResetColor();
+            //Console.WriteLine($"{result2}");
 
-            //List after second Import Students. Count
+            ////List after second Import Students. Count
 
-            Import(ImportStudents);
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"\nList after second Import Students. Count - {ImportStudents.Count}");
-            Console.ResetColor();
-            foreach (var st in ImportStudents)
-            {
-                Console.WriteLine(st.ToString());
-            }
+            //Import(ImportStudents);
+            //Console.ForegroundColor = ConsoleColor.Blue;
+            //Console.WriteLine($"\nList after second Import Students. Count - {ImportStudents.Count}");
+            //Console.ResetColor();
+            //foreach (var st in ImportStudents)
+            //{
+            //    Console.WriteLine(st.ToString());
+            //}
 
             Console.ReadKey();
         }
-        
+
         private static void Import(List<Student> ImportStudents)
         {
             ImportStudents?.Clear();
-            
+
             XDocument documentImp = new XDocument();
             documentImp = XDocument.Load("Input_students.xml");
             var studentsElement = documentImp.Elements().First();           // root
-            
+
             foreach (var student in studentsElement.Elements())          //child
             {
                 Student importStudent = new Student();
@@ -207,8 +294,8 @@ namespace Main_Lecture_4_Xml_
 
             foreach (var student in ImportStudents)
             {
-                XElement studentElement = new XElement("Student", 
-                    new XAttribute("firstName", student.FirstName), 
+                XElement studentElement = new XElement("Student",
+                    new XAttribute("firstName", student.FirstName),
                     new XAttribute("lastName", student.LastName));
 
                 root.Add(studentElement);
@@ -228,11 +315,11 @@ namespace Main_Lecture_4_Xml_
                 foreach (var course in student.Courses)
                 {
                     coursesElement.Add(new XElement("Course", course));
-                }           
+                }
             }
 
             documentExp.Save("Input_students.xml");
-            return documentExp;      
+            return documentExp;
         }
 
         private static string GetBirthDate(DateTime studentBirthday)
@@ -240,6 +327,82 @@ namespace Main_Lecture_4_Xml_
             return studentBirthday.ToString("dd.MM.yyy", CultureInfo.InvariantCulture);
         }
 
+        public static void TeacherHasNextCourses(Teacher teacher)
+            {
+            
+            Console.WriteLine($"\nFirst Teacher: {teacher.TeacherFirstName} {teacher.TeacherLastName} has next courses: ");
+            foreach (var c in teacher.Courses)
+            {
+                Console.WriteLine(c.ToString());
+            }
+        }
+
+        public static void CourseHasNextTeachers(Course course)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"\nCourse: {course} has next Teachers: ");
+            Console.ResetColor();
+            foreach (var t in course.CourseTeachers)
+            {
+                Console.WriteLine(t.ToString());
+            }
+        }
+
+        public static void CourseHasNextHomeTasks(Course course)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine($"\nCourse: {course} has next home tasks: ");
+            Console.ResetColor();
+            foreach (var c in course.CourseHomeTasksList)
+            {
+                Console.WriteLine(c.ToString());
+            }
+
+        }
+        public static void CourseHasNextStudents(Course course)
+        {
+            Console.WriteLine($"\nStudents on Course: {course}");
+            foreach (var c in course.CourseStudents)
+            {
+                Console.WriteLine(c.ToString());
+            };
+        }
+
+        public static void StudentHasNextCourses(Student student)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"\nStudent {student.FirstName} {student.LastName} has next courses:");
+            Console.ResetColor();
+            foreach (var course in student.Courses)
+            {
+                Console.WriteLine(course);
+            }
+            Console.ResetColor();
+        }
+
+        public static void StudentHasNextHomeTasks(Student student)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"\nStudent {student.FirstName} {student.LastName} has next home tasks:");
+            Console.ResetColor();
+            foreach (var task in student.AllHomeTasksMarks)
+            {
+                Console.WriteLine(task);
+            }
+            Console.ResetColor();
+        }
+
+        public static void HomeTaskHasNextStudents(HomeTaks homeTask)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"\nHomeTask{homeTask.HomeworkTitle} has next Student and mark:");
+            Console.ResetColor();
+            foreach (var st in homeTask.HomeTaksMarks)
+            {
+                Console.WriteLine(st);
+            }
+            Console.ResetColor();
+        }
     }
 }
 
