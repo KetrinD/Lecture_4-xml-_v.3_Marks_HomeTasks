@@ -37,30 +37,24 @@ namespace Main_Lecture_4_Xml_
             HomeTaks homeTask_3 = new HomeTaks("Watch 3-st season of Games of Thrones", "Discuss Jaime Lannister character with friends", "15.10.2019");
             HomeTaks homeTask_4 = new HomeTaks("Watch 4-st season of Games of Thrones", "Discuss Arya Stark character with friends", "30.10.2019");
 
+            // corurses added to Teacher 
+            // Teacher added to courses
+            AddingHelper.AssignTeacherToCourse(teacher_1, course_1);
+            AddingHelper.AssignTeacherToCourse(teacher_1, course_2);
+            AddingHelper.AssignTeacherToCourse(teacher_1, course_3);
+            AddingHelper.AssignTeacherToCourse(teacher_2, course_1);
+            AddingHelper.AssignTeacherToCourse(teacher_2, course_3);
+            AddingHelper.AssignTeacherToCourse(teacher_2, course_4);
+
             // Teacher has next courses
-            teacher_1.Courses.Add(course_1);
-            teacher_1.Courses.Add(course_2);
-            teacher_1.Courses.Add(course_3);
-
-            teacher_2.Courses.Add(course_1);
-            teacher_2.Courses.Add(course_3);
-            teacher_2.Courses.Add(course_4);
-
-            TeacherHasNextCourses(teacher_1);
-            TeacherHasNextCourses(teacher_2);
+            DisplayingData.TeacherHasNextCourses(teacher_1);
+            DisplayingData.TeacherHasNextCourses(teacher_2);
 
             // Course has next Teachers:
-            course_1.CourseTeachers.Add(teacher_1);
-            course_1.CourseTeachers.Add(teacher_2);
-            course_2.CourseTeachers.Add(teacher_1);
-            course_3.CourseTeachers.Add(teacher_1);
-            course_3.CourseTeachers.Add(teacher_2);
-            course_4.CourseTeachers.Add(teacher_2);
-
-            CourseHasNextTeachers(course_1);
-            CourseHasNextTeachers(course_2);
-            CourseHasNextTeachers(course_3);
-            CourseHasNextTeachers(course_4);
+            DisplayingData.CourseHasNextTeachers(course_1);
+            DisplayingData.CourseHasNextTeachers(course_2);
+            DisplayingData.CourseHasNextTeachers(course_3);
+            DisplayingData.CourseHasNextTeachers(course_4);
 
             //Course has next home tasks:      
             course_2.CourseHomeTasksList.Add(homeTask_1);
@@ -68,10 +62,10 @@ namespace Main_Lecture_4_Xml_
             course_3.CourseHomeTasksList.Add(homeTask_3);
             course_3.CourseHomeTasksList.Add(homeTask_4);
 
-            CourseHasNextHomeTasks(course_1);
-            CourseHasNextHomeTasks(course_2);
-            CourseHasNextHomeTasks(course_3);
-            CourseHasNextHomeTasks(course_4);
+            DisplayingData.CourseHasNextHomeTasks(course_1);
+            DisplayingData.CourseHasNextHomeTasks(course_2);
+            DisplayingData.CourseHasNextHomeTasks(course_3);
+            DisplayingData.CourseHasNextHomeTasks(course_4);
 
             //STUDENT
             List<Student> ImportStudents = new List<Student>();
@@ -90,43 +84,35 @@ namespace Main_Lecture_4_Xml_
             newStudent_1.ExtraData.Add("SkypeId", "kdubovets");
             newStudent_1.ExtraData.Add("Marriage", "No,Thanks God");
 
-            // corurses added to student
-            newStudent_1.Courses.Add(course_2);
-            newStudent_1.Courses.Add(course_3);
-
+            // corurses added to student 
             // student added to courses
-            course_3.CourseStudents.Add(newStudent_1);
-            course_4.CourseStudents.Add(newStudent_1);
+            AddingHelper.AssignStudentToCourse(newStudent_1, course_2);
+            AddingHelper.AssignStudentToCourse(newStudent_1, course_3);
 
             // all hometasks and its mark added to student
-            newStudent_1.AllHomeTasksMarks.Add(homeTask_1, mark_B);
-            newStudent_1.AllHomeTasksMarks.Add(homeTask_2, mark_A);
-            newStudent_1.AllHomeTasksMarks.Add(homeTask_3, mark_B);
-            newStudent_1.AllHomeTasksMarks.Add(homeTask_4, mark_A);
-
             // student added to home tasks
-            homeTask_1.HomeTaksMarks.Add(newStudent_1, mark_B);
-            homeTask_2.HomeTaksMarks.Add(newStudent_1, mark_A);
-            homeTask_3.HomeTaksMarks.Add(newStudent_1, mark_B);
-            homeTask_4.HomeTaksMarks.Add(newStudent_1, mark_A);
+            AddingHelper.AssignStudentToHometask(newStudent_1, homeTask_1, mark_B);
+            AddingHelper.AssignStudentToHometask(newStudent_1, homeTask_2, mark_A);
+            AddingHelper.AssignStudentToHometask(newStudent_1, homeTask_3, mark_B);
+            AddingHelper.AssignStudentToHometask(newStudent_1, homeTask_4, mark_B);
 
-            //Students on each Course
-            CourseHasNextStudents(course_1);
-            CourseHasNextStudents(course_2);
-            CourseHasNextStudents(course_3);
-            CourseHasNextStudents(course_4);
+            //Course Has Next Students
+            DisplayingData.CourseHasNextStudents(course_1);
+            DisplayingData.CourseHasNextStudents(course_2);
+            DisplayingData.CourseHasNextStudents(course_3);
+            DisplayingData.CourseHasNextStudents(course_4);
 
             //Student has next courses
-            StudentHasNextCourses(newStudent_1);
+            DisplayingData.StudentHasNextCourses(newStudent_1);
 
             //Student has next Home Tasks
-            StudentHasNextHomeTasks(newStudent_1);
+            DisplayingData.StudentHasNextHomeTasks(newStudent_1);
 
             //Home task has next Students and their marks 
-            HomeTaskHasNextStudents(homeTask_1);
-            HomeTaskHasNextStudents(homeTask_2);
-            HomeTaskHasNextStudents(homeTask_3);
-            HomeTaskHasNextStudents(homeTask_4);
+            DisplayingData.HomeTaskHasNextStudents(homeTask_1);
+            DisplayingData.HomeTaskHasNextStudents(homeTask_2);
+            DisplayingData.HomeTaskHasNextStudents(homeTask_3);
+            DisplayingData.HomeTaskHasNextStudents(homeTask_4);
             
 
             //*********************************************
@@ -325,84 +311,7 @@ namespace Main_Lecture_4_Xml_
         private static string GetBirthDate(DateTime studentBirthday)
         {
             return studentBirthday.ToString("dd.MM.yyy", CultureInfo.InvariantCulture);
-        }
-
-        public static void TeacherHasNextCourses(Teacher teacher)
-            {
-            
-            Console.WriteLine($"\nFirst Teacher: {teacher.TeacherFirstName} {teacher.TeacherLastName} has next courses: ");
-            foreach (var c in teacher.Courses)
-            {
-                Console.WriteLine(c.ToString());
-            }
-        }
-
-        public static void CourseHasNextTeachers(Course course)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine($"\nCourse: {course} has next Teachers: ");
-            Console.ResetColor();
-            foreach (var t in course.CourseTeachers)
-            {
-                Console.WriteLine(t.ToString());
-            }
-        }
-
-        public static void CourseHasNextHomeTasks(Course course)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine($"\nCourse: {course} has next home tasks: ");
-            Console.ResetColor();
-            foreach (var c in course.CourseHomeTasksList)
-            {
-                Console.WriteLine(c.ToString());
-            }
-
-        }
-        public static void CourseHasNextStudents(Course course)
-        {
-            Console.WriteLine($"\nStudents on Course: {course}");
-            foreach (var c in course.CourseStudents)
-            {
-                Console.WriteLine(c.ToString());
-            };
-        }
-
-        public static void StudentHasNextCourses(Student student)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"\nStudent {student.FirstName} {student.LastName} has next courses:");
-            Console.ResetColor();
-            foreach (var course in student.Courses)
-            {
-                Console.WriteLine(course);
-            }
-            Console.ResetColor();
-        }
-
-        public static void StudentHasNextHomeTasks(Student student)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"\nStudent {student.FirstName} {student.LastName} has next home tasks:");
-            Console.ResetColor();
-            foreach (var task in student.AllHomeTasksMarks)
-            {
-                Console.WriteLine(task);
-            }
-            Console.ResetColor();
-        }
-
-        public static void HomeTaskHasNextStudents(HomeTaks homeTask)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"\nHomeTask{homeTask.HomeworkTitle} has next Student and mark:");
-            Console.ResetColor();
-            foreach (var st in homeTask.HomeTaksMarks)
-            {
-                Console.WriteLine(st);
-            }
-            Console.ResetColor();
-        }
+        }    
     }
 }
 
